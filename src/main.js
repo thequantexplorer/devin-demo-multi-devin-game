@@ -28,10 +28,10 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.1;
+renderer.toneMappingExposure = 1.0;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = THREE.PCFShadowMap;
 app.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
@@ -42,7 +42,7 @@ const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerH
 
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
-const bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.9, 0.55, 0.62);
+const bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.55, 0.5, 0.8);
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
 
@@ -114,7 +114,11 @@ function buildWorld() {
   levelGroup.traverse((child) => {
     if (child.name === 'crystal') crystalMeshes[child.userData.index] = child;
   });
-  for (const mesh of crystalMeshes) mesh.userData.baseY = mesh.position.y;
+  for (const mesh of crystalMeshes) {
+    mesh.userData.baseY = mesh.position.y;
+    // Keep the core cyan under bloom instead of clipping to white.
+    if (mesh.material.emissiveIntensity > 1.2) mesh.material.emissiveIntensity = 1.2;
+  }
 
   torchLights = [];
   levelGroup.traverse((child) => {
@@ -218,7 +222,27 @@ let shake = 0;
 
 // HUD, audio and input
 
-const hud = createHud(document.getElementById('hud'));
+const hudRoot = document.getElementById('hud');
+const hud = createHud(hudRoot);
+
+const hint = document.createElement('div');
+hint.className = 'controls-hint';
+hint.textContent = 'WASD / Arrow keys to move  ·  R to restart';
+Object.assign(hint.style, {
+  position: 'absolute',
+  bottom: '20px',
+  left: '50%',
+  transform: 'translateX(-50%)',
+  padding: '6px 14px',
+  borderRadius: '999px',
+  background: 'rgba(11, 14, 20, 0.55)',
+  border: '1px solid rgba(255, 255, 255, 0.08)',
+  color: 'rgba(230, 236, 245, 0.7)',
+  font: '500 12px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif',
+  letterSpacing: '0.06em',
+  whiteSpace: 'nowrap',
+});
+hudRoot.append(hint);
 const audio = createAudio(window.AudioContext || window.webkitAudioContext);
 
 const keys = new Set();
@@ -275,11 +299,13 @@ window.__game = game;
 
 // Loop
 
-const clock = new THREE.Clock();
+const timer = new THREE.Timer();
+timer.connect(document);
 let elapsed = 0;
 
-renderer.setAnimationLoop(() => {
-  const realDt = Math.min(clock.getDelta(), MAX_DT);
+renderer.setAnimationLoop((timestamp) => {
+  timer.update(timestamp);
+  const realDt = Math.min(timer.getDelta(), MAX_DT);
   const dt = realDt * speed;
   elapsed += dt;
 
