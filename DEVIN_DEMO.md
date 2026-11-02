@@ -34,7 +34,7 @@ Start a new Devin session and paste this. Replace `<you>` with your GitHub user 
 ```text
 Build the game described in docs/game-design.md in https://github.com/<you>/devin-demo-multi-devin-game, using several Devins in parallel.
 
-Follow the design skill in .agents/skills/design/SKILL.md. The result should look like a finished, polished product, not a default template.
+Follow the repo's design skill. The result should look like a finished, polished product.
 
 1. Read docs/game-design.md and run npm test to see the failing tests.
 2. Start four child Devin sessions at the same time, one per system in the design doc: level, player, enemies, and HUD and audio. Tell each child its section of the design doc, the files it owns, its test file and its branch (system/level, system/player, system/enemies, system/hud-audio). Each child only edits its own files, makes its own tests pass, and pushes its branch. Children do not open pull requests.
