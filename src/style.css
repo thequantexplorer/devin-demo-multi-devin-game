@@ -1,11 +1,29 @@
+:root {
+  --bg: #0b0e14;
+  --text: #e8ecf2;
+  --text-quiet: rgba(232, 236, 242, 0.62);
+  --glass: rgba(16, 20, 28, 0.58);
+  --glass-strong: rgba(16, 20, 28, 0.72);
+  --border: rgba(255, 255, 255, 0.1);
+  --accent: #5ce1ff;
+  --danger: #ff6b5c;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+  --text-sm: 13px;
+  --text-md: 16px;
+  --text-xl: 40px;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
 html,
 body {
   margin: 0;
   height: 100%;
   overflow: hidden;
-  background: #0d1117;
-  color: #f0f3f6;
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
 #app,
@@ -19,32 +37,190 @@ body {
   position: fixed;
   inset: 0;
   pointer-events: none;
+  user-select: none;
 }
+
+/* Top bar */
 
 .hud-bar {
   position: absolute;
   top: 16px;
   left: 50%;
   transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 8px 16px;
-  border-radius: 8px;
-  background: rgba(13, 17, 23, 0.75);
-  font-size: 18px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--glass);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  font-size: var(--text-md);
+  line-height: 24px;
   white-space: nowrap;
 }
+
+.hud-bar:empty {
+  display: none;
+}
+
+.hud-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hud-item::before {
+  content: '';
+  flex: none;
+  width: 16px;
+  height: 16px;
+  background: currentColor;
+}
+
+.hud-label {
+  color: var(--text-quiet);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hud-value {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--text);
+  transition: color 200ms var(--ease-out);
+}
+
+.hud-sep {
+  /* Keep the separator in textContent, but show a thin divider instead. */
+  display: inline-block;
+  width: 1px;
+  height: 16px;
+  margin: 0 8px;
+  overflow: hidden;
+  color: transparent;
+  background: var(--border);
+}
+
+.hud-crystals::before {
+  color: var(--accent);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  filter: drop-shadow(0 0 4px rgba(92, 225, 255, 0.8));
+}
+
+.hud-crystals .hud-value {
+  color: var(--accent);
+}
+
+.hud-lives::before {
+  color: var(--danger);
+  -webkit-mask: var(--heart) center / contain no-repeat;
+  mask: var(--heart) center / contain no-repeat;
+  --heart: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4 6.3 4c2.3 0 3.9 1.3 5.7 3.4C13.8 5.3 15.4 4 17.7 4c4 0 5.9 4.4 4.3 7.7C19.5 16.4 12 21 12 21z'/%3E%3C/svg%3E");
+}
+
+.hud-bar.is-low .hud-lives .hud-value {
+  color: var(--danger);
+}
+
+.hud-time::before {
+  color: var(--text-quiet);
+  -webkit-mask: var(--clock) center / contain no-repeat;
+  mask: var(--clock) center / contain no-repeat;
+  --clock: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E");
+}
+
+/* Win / game over banner */
 
 .hud-banner {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 16px 24px;
-  border-radius: 12px;
-  background: rgba(13, 17, 23, 0.85);
-  font-size: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 320px;
+  box-sizing: border-box;
+  padding: 32px 48px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--glass-strong);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  font-size: var(--text-md);
   text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -50%) scale(0.96);
+  transition:
+    opacity 200ms var(--ease-out),
+    transform 200ms var(--ease-out),
+    visibility 0s linear 200ms;
+}
+
+.hud-banner.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+  transition:
+    opacity 200ms var(--ease-out),
+    transform 200ms var(--ease-out),
+    visibility 0s;
+}
+
+/* Fallback for a banner filled with plain text and no state class. */
+.hud-banner:not(.is-visible):not(:empty):not([data-status]) {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .hud-banner:empty {
   display: none;
+}
+
+.hud-banner-title {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  line-height: 48px;
+  letter-spacing: -0.02em;
+}
+
+.hud-banner-hint {
+  color: var(--text-quiet);
+  font-size: var(--text-md);
+  line-height: 24px;
+}
+
+.hud-banner[data-status='won'] {
+  border-color: rgba(92, 225, 255, 0.35);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5), 0 0 48px rgba(92, 225, 255, 0.18);
+}
+
+.hud-banner[data-status='won'] .hud-banner-title {
+  color: var(--accent);
+  text-shadow: 0 0 24px rgba(92, 225, 255, 0.45);
+}
+
+.hud-banner[data-status='lost'] {
+  border-color: rgba(255, 107, 92, 0.35);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5), 0 0 48px rgba(255, 107, 92, 0.15);
+}
+
+.hud-banner[data-status='lost'] .hud-banner-title {
+  color: var(--danger);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-banner,
+  .hud-banner.is-visible {
+    transition: none;
+  }
 }
