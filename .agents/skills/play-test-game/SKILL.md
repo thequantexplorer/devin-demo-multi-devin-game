@@ -3,6 +3,12 @@ name: play-test-game
 description: Run Crystal Keep in the browser and play-test it. Use before opening a PR that changes the game, and when recording a video of it.
 ---
 
+## What the game needs for play-testing
+
+- `window.__game` holds the current game state, with at least `player`, `collected`, `lives` and `status` (`'playing'`, `'won'` or `'lost'`).
+- An optional `speed` URL parameter (for example `?speed=0.25`) multiplies the frame time, so the whole game runs slower. The default is 1.
+- The HUD bar reads `Crystals 0/5 · Lives 3 · 0:00`, and the win banner says `You win! Press R to play again`.
+
 ## Run it
 
 1. `npm install`
@@ -18,7 +24,7 @@ Check the state at any time in the browser console with `window.__game`, for exa
 
 A good play-test shows, in this order:
 
-1. The level, the blue player, 5 crystals and 3 red guards, and the HUD bar reading `Crystals 0/5 · Lives 3 · 0:00` (the timer counts up).
+1. The level, the player, 5 crystals and 3 red guards, and the HUD bar reading `Crystals 0/5 · Lives 3 · 0:00` (the timer counts up).
 2. Moving: the player walks tile by tile and stops at walls.
 3. A pickup: the crystal disappears, the HUD count goes up, and a sound plays.
 4. A hit: walk into a guard. Lives go down by one, the player goes back to the start and blinks.

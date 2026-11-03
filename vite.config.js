@@ -1,8 +1,10 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: './',
-  server: { port: 5173, host: true },
-  build: { chunkSizeWarningLimit: 1000 },
-  test: { environment: 'node' },
+  server: { port: 5173, strictPort: true },
+  test: {
+    environment: 'node',
+    include: ['src/**/*.test.js'],
+    passWithNoTests: true,
+  },
 });

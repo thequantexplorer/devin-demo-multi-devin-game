@@ -14,7 +14,7 @@ A small 3D game that looks finished: atmosphere, light and clear readable shapes
 - Player: a rounded, friendly shape (a capsule body with a small head) in warm white, facing the way it moves.
 - Guards: dark red-armored shapes (`#B23A3A`) with a small orange lantern light, so they are easy to spot.
 - Pickups and hits: a quick burst of particles and a short camera shake on hit; the player blinks while safe after a hit.
-- HUD (`src/style.css`, `hud.js`): a translucent dark glass bar at the top center with icons or short labels for crystals, lives and time, using `ui-monospace` numbers. The win and game over banner is a centered glass panel with a big title and "Press R to play again".
+- HUD: a translucent dark glass bar at the top center with icons or short labels for crystals, lives and time, using `ui-monospace` numbers. The win and game over banner is a centered glass panel with a big title and "Press R to play again".
 
 States to screenshot: the start of the level, a crystal pickup, a guard hit, and the win banner.
 
